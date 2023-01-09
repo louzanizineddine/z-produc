@@ -8,6 +8,20 @@
     <script defer src="./../public/js/script.js"></script>
   </head>
   <body>
-    <h1>Magnus Carlsen is the btest player ever to live</h1>
+    <div class="container">
+      <div class="date">
+        <p> hello <%= results[0].the_date%> </p>
+        <p> the rating is <%= results[0].rating %> </p>
+      </div>
+      <div class="produc">
+        <div class="btn"><button>25%</button></div>
+        <div class="btn"><button>50%</button></div>
+        <div class="btn"><button>75%</button></div>
+        <div class="btn"><button>100%</button></div>
+      </div>
+      <form>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
   </body>
 </html>
