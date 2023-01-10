@@ -12,6 +12,7 @@ const port = 3000;
 
 const app = express();
 
+app.use(express.json())
 
 app.use('/public', express.static(process.cwd() + '/public'));
 
@@ -19,19 +20,31 @@ app.set('view engine', 'ejs');
 
 
 
+
 app.get("/", (req, res) => {
-  connection.query(
-    "SELECT * FROM `Produchistory`",
-    (error, results, fields) => {
-      if(error) throw error;
-      console.log(results);
-      res.render("index" , {results : results});
-    }
-  );
+  res.render("index");
+  // connection.query(
+  //   "SELECT * FROM `Produchistory`",
+  //   (error, results, fields) => {
+  //     if(error) throw error;
+  //     console.log(results);
+  //     res.render("index" , {results : results});
+  //   }
+  // );
   
 });
 
-
+app.post('/' , (req , res) => {
+  console.log(req.body);
+  connection.query(
+    `INSERT INTO Produchistory(the_date , rating)  VALUES ( curdate() , ${req.body.rating})`,
+    (error, results, fields) => {
+      if(error) throw error;
+      console.log(results);
+      res.status(200).send('insertd to back end successfully');
+    }
+  );
+})
 
 
 
