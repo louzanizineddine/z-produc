@@ -23,14 +23,13 @@ app.set('view engine', 'ejs');
 
 app.get("/", (req, res) => {
   res.render("index");
-  // connection.query(
-  //   "SELECT * FROM `Produchistory`",
-  //   (error, results, fields) => {
-  //     if(error) throw error;
-  //     console.log(results);
-  //     res.render("index" , {results : results});
-  //   }
-  // );
+  connection.query(
+    `select * from Produchistory where the_date = curdate()`,
+    (error, results, fields) => {
+      if(error) throw error;
+      console.log(results);
+    }
+  );
   
 });
 
