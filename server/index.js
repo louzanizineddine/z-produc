@@ -3,7 +3,8 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import connection from './database.js';
-import  cors from 'cors';
+import bcrypt from 'bcrypt';
+import cors from 'cors';
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -33,29 +34,77 @@ app.get("/history", (req, res) => {
   connection.query(
     `select * from Produchistory`,
     (error, results, fields) => {
-      if(error) throw error;
+      if (error) throw error;
       console.log(results);
       res.send(results);
     }
   );
-  
+
 });
 
-app.post('/' , (req , res) => {
-  console.log(req.body);
+// app.post('/' , (req , res) => {
+//   console.log(req.body);
+//   connection.query(
+//     `INSERT INTO Produchistory(the_date , rating)  VALUES ( curdate() , ${req.body.rating})`,
+//     (error, results, fields) => {
+//       if(error) throw error;
+//       console.log(results);
+//       res.status(200).send('insertd to back end successfully');
+//     }
+//   );
+// })
+
+
+
+
+app.post('/createUser', async (req, res) => {
+  const username = req.body.username;
+  const hashedPassword = await bcrypt.hash(req.body.password, 10);
+  console.log(username, hashedPassword);
+  // we make sure thaat that username does not exist in the database
   connection.query(
-    `INSERT INTO Produchistory(the_date , rating)  VALUES ( curdate() , ${req.body.rating})`,
+    `SELECT * FROM User WHERE user_name = '${username}'`,
     (error, results, fields) => {
-      if(error) throw error;
-      console.log(results);
-      res.status(200).send('insertd to back end successfully');
+      if (error) throw error;
+      if (results.length > 0) {
+        res.status(400).send('username already exists');
+      } else {
+        connection.query(
+          `INSERT INTO User (user_name , password) VALUES ('${username}' , '${hashedPassword}')`,
+          (error, results, fields) => {
+            if (error) throw error;
+            res.status(200).send('user created');
+          }
+        )
+      }})
+})
+
+app.post('/login', async (req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
+  connection.query(
+    `SELECT * FROM User WHERE user_name = '${username}'`,
+    (error, results, fields) => {
+      if (error) throw error;
+      if (results.length > 0) {
+        bcrypt.compare(password, results[0].password, (err, result) => {
+          if (result) {
+            res.status(200).send('login successful');
+          } else {
+            res.status(400).send('wrong password');
+          }
+        })
+      } else {
+        res.status(400).send('user does not exist');
+      }
     }
-  );
+  )
 })
 
 
 
-app.listen(port, function(err) {
+
+app.listen(port, function (err) {
   if (err) {
     console.log(err);
   } else {
