@@ -89,14 +89,32 @@ app.post('/login', async (req, res) => {
       if (results.length > 0) {
         bcrypt.compare(password, results[0].password, (err, result) => {
           if (result) {
-            res.status(200).send('login successful');
+            res.status(200);
+            res.json({ error: "welcome back" });;
           } else {
-            res.status(400).send('wrong password');
+            res.status(400);
+            res.json({ error: "wrong password" });
           }
         })
       } else {
-        res.status(400).send('user does not exist');
+        res.status(400);
+        res.json({ error: "user does not exist" });
       }
+    }
+  )
+})
+
+
+app.post('/rate', (req, res) => {
+  const rating = req.body.rating;
+  const wake_up_date = req.body.wake_up_date;
+  const note = req.body.note;
+  const that_thing = Number(req.body.that_thing);
+  connection.query(
+    `INSERT INTO Produchistory (rating) VALUES ('${rating}')`,
+    (error, results, fields) => {
+      if (error) throw error;
+      res.status(200).send('rating inserted');
     }
   )
 })
