@@ -42,19 +42,6 @@ app.get("/history", (req, res) => {
 
 });
 
-// app.post('/' , (req , res) => {
-//   console.log(req.body);
-//   connection.query(
-//     `INSERT INTO Produchistory(the_date , rating)  VALUES ( curdate() , ${req.body.rating})`,
-//     (error, results, fields) => {
-//       if(error) throw error;
-//       console.log(results);
-//       res.status(200).send('insertd to back end successfully');
-//     }
-//   );
-// })
-
-
 
 
 app.post('/createUser', async (req, res) => {
